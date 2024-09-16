@@ -1,0 +1,15 @@
+{
+  "name": "project-digital-menu",
+  "version": "1.0.0",
+  "workspaces": [
+    "output"
+  ],
+  "scripts": {
+    "start": "npm run start:dev -w output",
+    "start:prod": "npm run start:prod -w output",
+    "build": "npm run build -w output"
+  },
+  "dependencies": {
+    "@january/declarative": "^0.2.0"
+  }
+}
