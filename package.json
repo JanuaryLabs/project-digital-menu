@@ -4,12 +4,17 @@
   "workspaces": [
     "output"
   ],
+  "private": true,
   "scripts": {
-    "start": "npm run start:dev -w output",
-    "start:prod": "npm run start:prod -w output",
-    "build": "npm run build -w output"
+    "dev": "npm run dev -w output",
+    "build": "node --watch-path ./src ./node_modules/@january/canary generate"
   },
   "dependencies": {
-    "@january/declarative": "^0.2.0"
+    "@january/canary": "https://github.com/JanuaryLabs/dist/raw/main/canary.tar.gz",
+    "@january/declarative": "https://github.com/JanuaryLabs/dist/raw/main/declarative.tar.gz",
+    "@january/docker": "https://github.com/JanuaryLabs/dist/raw/main/docker.tar.gz",
+    "@january/extensions": "https://github.com/JanuaryLabs/dist/raw/main/extensions.tar.gz",
+    "@types/ip": "^1.1.3",
+    "ip": "^2.0.1"
   }
 }

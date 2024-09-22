@@ -2,5 +2,13 @@
   "files.autoSave": "afterDelay",
   "files.autoSaveWhenNoErrors": false,
   "files.refactoring.autoSave": true,
-  "files.autoSaveDelay": 500
+  "files.autoSaveDelay": 500,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": true,
+  "explorer.fileNesting.patterns": {
+    "compose.ts": "compose.*, docker-compose.*, *.env",
+    "package.json": "package*.json",
+    "tsconfig.json": "tsconfig*.json, .prettier*, .gitignore",
+    "Dockerfile": "Dockerfile*, *.toml",
+  }
 }

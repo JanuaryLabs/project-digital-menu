@@ -1,0 +1,57 @@
+volumes:
+  postgres_data: {}
+networks:
+  development: {}
+services:
+  database:
+    image: 'postgres:16'
+    ports:
+      - '5432:5432'
+    volumes:
+      - 'postgres_data:/var/lib/postgresql/data'
+    networks:
+      - 'development'
+    environment:
+      POSTGRES_PASSWORD: 'yourpassword'
+      POSTGRES_USER: 'youruser'
+      POSTGRES_DB: 'yourdatabase'
+  pgadmin:
+    image: 'dpage/pgadmin4'
+    ports:
+      - '8080:8080'
+    networks:
+      - 'development'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'admin@admin.com'
+      PGADMIN_DEFAULT_PASSWORD: 'password'
+  server:
+    image: 'node:lts'
+    build:
+      context: '.'
+      dockerfile: 'Dockerfile'
+    networks:
+      - 'development'
+    restart: 'unless-stopped'
+    command: 'node --watch /app/build/server.js'
+    develop:
+      watch:
+        - action: 'sync'
+          path: './output/build/server.js'
+          target: '/app/build/server.js'
+          ignore:
+            - 'node_modules/'
+        - action: 'rebuild'
+          path: './output/package.json'
+        - action: 'rebuild'
+          path: './package.json'
+    ports:
+      - '3000:3000'
+      - '9229:9229'
+    environment:
+      NODE_ENV: 'development'
+      PORT: '3000'
+    env_file:
+      - 'compose.env'
+      - '.env'
+    depends_on:
+      - 'database'

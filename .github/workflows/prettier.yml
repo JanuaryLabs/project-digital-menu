@@ -1,0 +1,21 @@
+name: Format with Prettier
+'on':
+  push:
+    branches:
+      - main
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install
+        run: npm install --only=dev --no-audit --no-fund
+      - name: Format
+        run: ./node_modules/.bin/prettier --write .
+      - name: Push changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: '"Format with Prettier"'
+          commit_user_name: '"ci"'
+          commit_user_email: '"ci@github.com"'

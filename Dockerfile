@@ -12,5 +12,5 @@ WORKDIR /app
 COPY --from=builder /app/node_modules /app/node_modules
 COPY ./output/build/ /app/build/
 COPY ./output/package*.json ./
-CMD [ "npm", "run", "start:prod" ]
+CMD [ "npm", "start"]
 EXPOSE 3000
