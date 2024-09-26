@@ -11,25 +11,16 @@ jobs:
       - id: checkout
         name: checkout App Repo
         uses: actions/checkout@v3
-      - id: install_lockfile
-        name: Install Lockfile
-        run: npm install --package-lock-only
       - id: setup_node
         uses: actions/setup-node@v3
         name: Setup Node.js
         with:
           node-version: '20'
           cache: npm
-      - id: cache_deps
-        name: Cache Or Restore Node Modules.
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-      - id: install_deps
-        name: Install project dependencies.
-        run: npm install --no-audit --no-fund
-        if: steps.cache_deps.outputs.cache-hit != 'true'
+      - name: Build
+        run: >-
+          npx https://github.com/JanuaryLabs/dist/raw/main/canary.tar.gz
+          generate --no-upgrade
       - name: Setup Fly.io cli.
         uses: superfly/flyctl-actions/setup-flyctl@master
       - id: deploy

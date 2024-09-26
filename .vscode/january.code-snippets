@@ -1,0 +1,86 @@
+{
+  "HTTP Workflow": {
+    "prefix": "httpworkflow",
+    "body": [
+      "workflow('$1', {\n  tag: '$2',\n  trigger: trigger.http({\n    method: '$3',\n    path: '$4',\n  }),\n  execute: async (trigger, request) => {\n  const url = new URL(request.url);\n  return {\n      path: url.pathname,\n      method: request.method,\n    }\n  },\n}),\n      "
+    ],
+    "description": "Creates a generic HTTP workflow with customizable method and path"
+  },
+  "Schedule Workflow": {
+    "prefix": "cronworkflow",
+    "body": [
+      "workflow('$1', {\n  tag: '$2',\n  trigger: trigger.schedule({\n    pattern: '$3',\n  }),\n  execute: async ({ trigger }) => {\n    // Scheduled task logic here\n  },\n}),\n      "
+    ],
+    "description": "Creates a generic Cron schedule workflow"
+  },
+  "WebSocket Workflow": {
+    "prefix": "websocketworkflow",
+    "body": [
+      "workflow('$1', {\n  tag: '$2',\n  trigger: trigger.websocket({\n    topic: '$3',\n  }),\n  execute: async ({ trigger }) => {\n    return trigger.channel; // WebSocket response logic here\n  },\n}),\n      "
+    ],
+    "description": "Creates a generic WebSocket workflow"
+  },
+  "SSE Workflow": {
+    "prefix": "sseworkflow",
+    "body": [
+      "workflow('$1', {\n  tag: '$2',\n  trigger: trigger.sse({\n    path: '$3',\n  }),\n  execute: async ({ trigger }) => {\n    const stream = new PassThrough();\n    setInterval(() => {\n    stream.push('data: $4\\n\\n');\n    }, 1000);\n    return stream;\n  },\n}),\n      "
+    ],
+    "description": "Creates a generic Server-Sent Events (SSE) workflow"
+  },
+  "GitHub Webhook Workflow": {
+    "prefix": "githubworkflow",
+    "body": [
+      "workflow('$1', {\n  tag: '$2',\n  trigger: trigger.github({\n    event: '$3',\n  }),\n  execute: async ({ trigger }) => {\n    // Webhook logic here\n  },\n}),\n      "
+    ],
+    "description": "Creates a generic GitHub Webhook workflow"
+  },
+  "Create Workflow": {
+    "prefix": "createworkflow",
+    "body": [
+      "workflow('Create$1', {\n  tag: '$2',\n  trigger: trigger.http({\n    method: 'post',\n    path: '/$3',\n  }),\n  execute: async ({ trigger }) => {\n    const record = await saveEntity(tables.$4, {\n      field1: trigger.body.field1,\n      field2: trigger.body.field2,\n    }),\n    return {\n      id: record.id,\n    };\n  },\n}),\n      "
+    ],
+    "description": "Creates a workflow for inserting a new entity and returns the record's ID"
+  },
+  "List Workflow": {
+    "prefix": "listworkflow",
+    "body": [
+      "workflow('List$1', {\n  tag: '$2',\n  trigger: trigger.http({\n    method: 'get',\n    path: '/$3',\n  }),\n  execute: async ({ trigger }) => {\n    const qb = createQueryBuilder(tables.$4, '$4');\n    const paginationMetadata = limitOffsetPagination(qb, {\n      pageSize: trigger.query.pageSize,\n      pageNo: trigger.query.pageNo,\n      count: await qb.getCount(),\n    }),\n    const records = await execute(qb);\n    return {\n      meta: paginationMetadata(records),\n      records: records,\n    };\n  },\n}),\n      "
+    ],
+    "description": "Creates a workflow for listing multiple entities with pagination"
+  },
+  "Get Workflow": {
+    "prefix": "getworkflow",
+    "body": [
+      "workflow('Get$1ById', {\n  tag: '$2',\n  trigger: trigger.http({\n    method: 'get',\n    path: '/$3/:id',\n  }),\n  execute: async ({ trigger }) => {\n    const qb = createQueryBuilder(tables.$4, '$4').where('id = :id', { id: trigger.path.id }),\n    const record = await execute(qb);\n    return record;\n  },\n}),\n      "
+    ],
+    "description": "Creates a workflow for reading a single entity by ID"
+  },
+  "Update Workflow": {
+    "prefix": "updateworkflow",
+    "body": [
+      "workflow('Update$1', {\n  tag: '$2',\n  trigger: trigger.http({\n    method: 'patch',\n    path: '/$3/:id',\n  }),\n  execute: async ({ trigger }) => {\n    const qb = createQueryBuilder(ttables.$4, '$4').where('id = :id', { id: trigger.path.id }),\n    const record = await updateEntity(qb, {\n      field1: trigger.body.field1,\n      field2: trigger.body.field2,\n    }),\n    return {\n      id: record.id,\n    };\n  },\n}),\n      "
+    ],
+    "description": "Creates a workflow for updating an entity by ID and returns the record's ID"
+  },
+  "Delete Workflow": {
+    "prefix": "deleteworkflow",
+    "body": [
+      "workflow('Delete$1', {\n  tag: '$2',\n  trigger: trigger.http({\n    method: 'delete',\n    path: '/$3/:id',\n  }),\n  execute: async ({ trigger }) => {\n    const qb = createQueryBuilder(tables.$4, '$4').where('id = :id', { id: trigger.path.id }),\n    await removeEntity(qb);\n    return {\n      id: trigger.path.id,\n    };\n  },\n}),\n      "
+    ],
+    "description": "Creates a workflow for deleting an entity by ID and returns the deleted ID"
+  },
+  "Replace Workflow": {
+    "prefix": "replaceworkflow",
+    "body": [
+      "workflow('Replace$1', {\n  tag: '$2',\n  trigger: trigger.http({\n    method: 'put',\n    path: '/$3/:id',\n  }),\n  execute: async ({ trigger }) => {\n    const qb = createQueryBuilder(tables.$4, '$4').where('id = :id', { id: trigger.path.id }),\n    const record = await updateEntity(qb, {\n      field1: trigger.body.field1,\n      field2: trigger.body.field2,\n    }),\n    return {\n      id: record.id,\n    };\n  },\n}),\n      "
+    ],
+    "description": "Creates a workflow for replacing an entity and returns the updated ID"
+  },
+  "Exists Workflow": {
+    "prefix": "existsworkflow",
+    "body": [
+      "workflow('Exists$1', {\n  tag: '$2',\n  trigger: trigger.http({\n    method: 'head',\n    path: '/$3/:id',\n  }),\n  execute: async ({ trigger }) => {\n    const qb = createQueryBuilder(tables.$4, '$4').where('id = :id', { id: trigger.path.id }),\n    const doesExist = await exists(qb);\n    return {\n      exists: doesExist,\n    };\n  },\n}),\n      "
+    ],
+    "description": "Creates a workflow to check if an entity exists by ID"
+  }
+}

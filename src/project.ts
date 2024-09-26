@@ -7,10 +7,16 @@ import {
   trigger,
   unique,
   useTable,
-  workflow
+  workflow,
 } from '@january/declarative';
 
-import { createQueryBuilder, deferredJoinPagination, execute, saveEntity, setEntity } from '@extensions/postgresql';
+import {
+  createQueryBuilder,
+  deferredJoinPagination,
+  execute,
+  saveEntity,
+  setEntity,
+} from '@extensions/postgresql';
 import { tables } from 'src/features/entites';
 
 export default project(
@@ -22,10 +28,10 @@ export default project(
           method: 'get',
           path: '/',
         }),
-        execute: async (trigger) => {
+        execute: async ({ trigger }) => {
           const qb = createQueryBuilder(tables.menus, 'menus');
           const paginationMetadata = deferredJoinPagination(qb, {
-             pageSize: trigger.query.pageSize,
+            pageSize: trigger.query.pageSize,
             pageNo: trigger.query.pageNo,
             count: await qb.getCount(),
           });
@@ -39,7 +45,7 @@ export default project(
           method: 'post',
           path: '/',
         }),
-        execute: async (trigger) => {
+        execute: async ({ trigger }) => {
           await saveEntity(tables.menus, {
             name: trigger.body.name,
           });
@@ -51,7 +57,7 @@ export default project(
           method: 'post',
           path: '/',
         }),
-        execute: async (trigger) => {
+        execute: async ({ trigger }) => {
           await saveEntity(tables.products, {
             name: trigger.body.name,
             price: trigger.body.priceId,
@@ -69,10 +75,10 @@ export default project(
           method: 'get',
           path: '/',
         }),
-        execute: async (trigger) => {
+        execute: async ({ trigger }) => {
           const qb = createQueryBuilder(tables.products, 'products');
           const paginationMetadata = deferredJoinPagination(qb, {
-       pageSize: trigger.query.pageSize,
+            pageSize: trigger.query.pageSize,
             pageNo: trigger.query.pageNo,
             count: await qb.getCount(),
           });
@@ -86,7 +92,7 @@ export default project(
           method: 'post',
           path: '/category',
         }),
-        execute: async (trigger) => {
+        execute: async ({ trigger }) => {
           await saveEntity(tables.categories, {
             name: trigger.body.name,
             menu: trigger.body.menuId,
@@ -99,7 +105,7 @@ export default project(
           method: 'get',
           path: '/category',
         }),
-        execute: async (trigger) => {
+        execute: async ({ trigger }) => {
           const qb = createQueryBuilder(tables.categories, 'categories');
           const paginationMetadata = deferredJoinPagination(qb, {
             pageSize: trigger.query.pageSize,
@@ -116,7 +122,7 @@ export default project(
           method: 'post',
           path: '/tag',
         }),
-        execute: async (trigger) => {
+        execute: async ({ trigger }) => {
           await saveEntity(tables.productTags, {
             name: trigger.body.name,
           });
@@ -128,10 +134,10 @@ export default project(
           method: 'get',
           path: '/tag',
         }),
-        execute: async (trigger) => {
+        execute: async ({ trigger }) => {
           const qb = createQueryBuilder(tables.productTags, 'productTags');
           const paginationMetadata = deferredJoinPagination(qb, {
-       pageSize: trigger.query.pageSize,
+            pageSize: trigger.query.pageSize,
             pageNo: trigger.query.pageNo,
             count: await qb.getCount(),
           });
@@ -145,7 +151,7 @@ export default project(
           method: 'post',
           path: '/option',
         }),
-        execute: async (trigger) => {
+        execute: async ({ trigger }) => {
           await saveEntity(tables.productOptions, {
             name: trigger.body.name,
             price: trigger.body.priceId,
@@ -158,10 +164,10 @@ export default project(
           method: 'patch',
           path: '/product/:id',
         }),
-        execute: async (trigger) => {
+        execute: async ({ trigger }) => {
           const qb = createQueryBuilder(tables.products, 'products').where(
             'id = :id',
-            { id: trigger.path.id }
+            { id: trigger.path.id },
           );
           await setEntity(qb, {
             name: trigger.body.name,
@@ -180,7 +186,7 @@ export default project(
           method: 'patch',
           path: '/product/:productId/tag',
         }),
-        execute: async (trigger) => {
+        execute: async ({ trigger }) => {
           await saveEntity(tables.productTagLink, {
             productId: trigger.path.productId,
             tag: trigger.body.tagId,
@@ -193,7 +199,7 @@ export default project(
           method: 'patch',
           path: '/product/:productId/option',
         }),
-        execute: async (trigger) => {
+        execute: async ({ trigger }) => {
           await saveEntity(tables.productOptionLink, {
             productId: trigger.path.productId,
             option: trigger.body.optionId,
@@ -206,7 +212,7 @@ export default project(
           method: 'post',
           path: '/order',
         }),
-        execute: async (trigger) => {
+        execute: async ({ trigger }) => {
           const order = await saveEntity(tables.order, {});
           await saveEntity(tables.orderDetails, {
             total: trigger.body.total,
@@ -217,7 +223,7 @@ export default project(
         },
       }),
     ],
- tables: {
+    tables: {
       offers: table({
         fields: {
           title: field({
@@ -319,7 +325,7 @@ export default project(
       }),
     },
   }),
-feature('orders', {
+  feature('orders', {
     workflows: [],
     tables: {
       order: table({
