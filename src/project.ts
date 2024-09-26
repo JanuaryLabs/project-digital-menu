@@ -17,7 +17,7 @@ import {
   saveEntity,
   setEntity,
 } from '@extensions/postgresql';
-import { tables } from 'src/features/entites';
+import { tables } from '@workspace/entities';
 
 export default project(
   feature('menu', {
