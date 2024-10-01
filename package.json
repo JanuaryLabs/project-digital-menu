@@ -1,16 +1,19 @@
 {
   "name": "project-digital-menu",
   "version": "1.0.0",
-  "workspaces": ["output"],
+  "workspaces": [
+    "output"
+  ],
   "private": true,
   "scripts": {
-    "dev": "npm run dev -w output",
-    "build": "node --watch-path ./src ./node_modules/@january/canary generate"
+    "dev": "node --env-file .env ./output",
+    "build": "node --watch-path ./src --watch ./tools/january.config.js"
   },
   "dependencies": {
     "@january/declarative": "https://github.com/JanuaryLabs/dist/raw/main/declarative.tar.gz",
     "@january/extensions": "https://github.com/JanuaryLabs/dist/raw/main/extensions.tar.gz",
     "@january/canary": "https://github.com/JanuaryLabs/dist/raw/main/canary.tar.gz",
     "@january/docker": "https://github.com/JanuaryLabs/dist/raw/main/docker.tar.gz"
-  }
+  },
+  "type": "module"
 }
